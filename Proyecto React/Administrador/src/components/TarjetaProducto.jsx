@@ -1,6 +1,6 @@
 // src/componentes/TarjetaProducto.jsx
 import React from 'react';
-import { formatearPrecio } from '../../datos/datosProductos';
+import { formatearPrecio } from '../datos/datosProductos';
 
 // Asumimos que las imágenes están en la carpeta pública o en 'src/assets/img/'
 const RUTA_BASE_IMAGENES = '/src/assets/img/'; 

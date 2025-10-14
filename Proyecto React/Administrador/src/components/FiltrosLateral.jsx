@@ -1,6 +1,6 @@
 // src/componentes/FiltrosLateral.jsx
 import React from 'react';
-import { formatearPrecio, categorias } from '../../datos/datosProductos';
+import { formatearPrecio, categorias } from '../datos/datosProductos';
 
 const FiltrosLateral = ({ filtros, alCambiarFiltros }) => {
     

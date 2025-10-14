@@ -1,8 +1,8 @@
 // src/paginas/PaginaCatalogo.jsx
 import React, { useState, useMemo } from 'react';
 import { productos } from '../datos/datosProductos';
-import TarjetaProducto from '../componentes/TarjetaProducto';
-import FiltrosLateral from '../componentes/FiltrosLateral';
+import TarjetaProducto from '../components/TarjetaProducto';
+import FiltrosLateral from '../components/FiltrosLateral';
 
 const PRECIO_MAXIMO_INICIAL = 1500000;
 
