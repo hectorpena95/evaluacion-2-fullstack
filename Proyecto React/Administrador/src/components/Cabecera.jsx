@@ -1,29 +1,23 @@
+// src/components/Cabecera.jsx 
 
 import React from 'react';
 import { Link } from 'react-router-dom'; 
 
 const Cabecera = () => (
     <header id="main-header"> 
-        <div className="logo">
-            {/* Usar Link */}
-            <Link to="/">Level-Up Gamer</Link>
+        {/* CLAVE: Este div asegura que el contenido esté centrado dentro del header que es 100% ancho */}
+        <div className="contenedor-interno"> 
+            <div className="logo">
+                <Link to="/">Level-Up Gamer</Link>
+            </div>
+            <nav className="menu-nav">
+                <ul>
+                    <li><Link to="/catalogo">Catálogo</Link></li>
+                    <li><Link to="/login">Iniciar Sesión</Link></li>
+                    <li><Link to="/carrito" className="boton-carrito">Carrito</Link></li>
+                </ul>
+            </nav>
         </div>
-        <nav className="menu-nav">
-            <ul>
-                <li>
-                    {/* Usar Link para Catálogo */}
-                    <Link to="/catalogo">Catálogo</Link>
-                </li>
-                <li>
-                    {/* Usar Link para Iniciar Sesión */}
-                    <Link to="/login">Iniciar Sesión</Link>
-                </li>
-                <li>
-                    {/* Usar Link para Carrito */}
-                    <Link to="/carrito" className="boton-carrito">Carrito</Link>
-                </li>
-            </ul>
-        </nav>
     </header>
 );
 

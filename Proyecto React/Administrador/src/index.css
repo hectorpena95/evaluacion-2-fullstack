@@ -36,8 +36,18 @@ body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
+    /* CLAVE: Añadir width: 100% para evitar problemas de limitación */
+    width: 100%; 
     background-color: var(--color-background-primary);
     color: var(--color-text-primary); 
+}
+
+/* * CLAVE: Asegurarse de que el contenedor raíz de React (#root) 
+ * también ocupe el 100% para que los children (como el Header) no se limiten.
+ */
+#root {
+    width: 100%;
+    min-height: 100vh;
 }
 
 a {
@@ -56,22 +66,28 @@ a:hover {
 
 /* Estilos de la Cabecera/Footer */
 #main-header, footer {
+    /* Estas propiedades aseguran que el fondo OCUPE TODO el ancho */
+    width: 100%; 
     background-color: var(--color-background-secondary);
     color: var(--color-text-primary);
-    padding: 15px 30px;
+    padding: 15px 0; /* Solo padding vertical */
 }
-#main-header {
+
+#main-header .contenedor-interno { /* NUEVA CLASE PARA EL CONTENIDO CENTRADO */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1200px; /* Limita el contenido INTERNO */
+    margin: 0 auto;
+    padding: 0 30px; /* Añadimos el padding lateral DENTRO del contenedor centrado */
 }
+
 footer {
     text-align: center;
-    padding: 1rem;
+    padding: 1rem 0; /* Solo padding vertical */
     margin-top: 40px;
     border-top: 1px solid #333;
 }
-
 
 /* Estilos específicos para la página de catálogo */
 .pagina-catalogo {
@@ -204,7 +220,6 @@ footer {
 }
 
 .imagen-producto {
-    /* CLAVE: Limitar el ancho de la columna de la imagen para un tamaño moderado */
     flex-shrink: 0; 
     width: 400px; 
     max-width: 40%; 
@@ -214,7 +229,6 @@ footer {
 }
 
 .imagen-producto img {
-    /* La imagen debe llenar el contenedor limitado por el CSS de arriba */
     width: 100%; 
     height: auto;
     display: block;
@@ -288,4 +302,74 @@ footer {
     :root {
         /* No hacemos cambios drásticos para mantener el estilo oscuro/verde como tema principal */
     }
+}
+
+/* ================================================= */
+/* 4. Estilos de la Página de Inicio (Landing Page) */
+/* ================================================= */
+
+.pagina-inicio {
+    /* Aquí limitamos el ancho del contenido de la Home */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.hero-section {
+    padding: 80px 40px;
+    background-color: var(--color-background-secondary);
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.hero-section h2 {
+    font-size: 3.5rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.hero-section p {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-bottom: 2rem;
+}
+
+.community-section {
+    padding: 60px 40px;
+    background-color: #2a2a2a; /* Fondo ligeramente diferente para contraste */
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.community-section h2 {
+    font-size: 2.5rem;
+    color: var(--color-accent-green);
+    margin-bottom: 0.5rem;
+}
+
+.community-section p {
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Estilo general para botones CTA */
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    background-color: var(--color-accent-green);
+    color: var(--color-background-primary); /* Texto oscuro/claro */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+    background-color: #00e676; /* Verde más claro */
+    transform: translateY(-2px);
 }
