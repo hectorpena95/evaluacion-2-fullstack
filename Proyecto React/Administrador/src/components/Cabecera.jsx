@@ -1,15 +1,27 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom'; 
 
 const Cabecera = () => (
-    <header id="main-header">
+    <header id="main-header"> 
         <div className="logo">
-            <a href="index.html">Level-Up Gamer</a>
+            {/* Usar Link */}
+            <Link to="/">Level-Up Gamer</Link>
         </div>
-        <nav>
+        <nav className="menu-nav">
             <ul>
-                <li><a href="catalogo.html">Catálogo</a></li>
-                <li><a href="login.html">Iniciar Sesión</a></li>
-                <li><a href="carrito.html">Carrito</a></li>
+                <li>
+                    {/* Usar Link para Catálogo */}
+                    <Link to="/catalogo">Catálogo</Link>
+                </li>
+                <li>
+                    {/* Usar Link para Iniciar Sesión */}
+                    <Link to="/login">Iniciar Sesión</Link>
+                </li>
+                <li>
+                    {/* Usar Link para Carrito */}
+                    <Link to="/carrito" className="boton-carrito">Carrito</Link>
+                </li>
             </ul>
         </nav>
     </header>

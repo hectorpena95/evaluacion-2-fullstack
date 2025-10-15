@@ -186,11 +186,106 @@ footer {
     margin-top: 2rem;
 }
 
-/* Estilos para el modo claro (si el navegador lo prefiere) */
+/* ================================================= */
+/* 3. Estilos de Detalle del Producto (Ajuste de tamaño) */
+/* ================================================= */
+
+.pagina-detalle-producto {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.detalles-producto {
+    display: flex;
+    gap: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-text-secondary);
+}
+
+.imagen-producto {
+    /* CLAVE: Limitar el ancho de la columna de la imagen para un tamaño moderado */
+    flex-shrink: 0; 
+    width: 400px; 
+    max-width: 40%; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.imagen-producto img {
+    /* La imagen debe llenar el contenedor limitado por el CSS de arriba */
+    width: 100%; 
+    height: auto;
+    display: block;
+}
+
+.info-producto {
+    flex-grow: 1;
+}
+
+.info-producto h1 {
+    font-size: 2.5rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.precio-producto {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-accent-green);
+    margin-bottom: 1.5rem;
+}
+
+.descripcion-producto {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-primary);
+}
+
+.acciones-producto button {
+    padding: 1rem 1.5rem;
+    margin-right: 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.boton-agregar-carrito {
+    background-color: var(--color-accent-green);
+    color: var(--color-background-primary);
+}
+.boton-comprar {
+    background-color: var(--color-accent-blue);
+    color: var(--color-background-primary);
+}
+
+.info-extra-producto {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-background-secondary);
+}
+.info-extra-producto h3 {
+    color: var(--color-accent-blue);
+    margin-top: 1rem;
+    font-size: 1.3rem;
+}
+
+/* Estilos de Productos Relacionados */
+.productos-relacionados {
+    margin-top: 3rem;
+}
+.productos-relacionados h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--color-accent-blue);
+}
+
+/* Estilos de media query (mantener el modo oscuro como base) */
 @media (prefers-color-scheme: light) {
-    /* Puedes definir colores de modo claro aquí si lo deseas, 
-       pero por ahora mantendremos el tema oscuro como principal */
     :root {
-        /* No hacemos cambios drásticos para mantener el estilo oscuro */
+        /* No hacemos cambios drásticos para mantener el estilo oscuro/verde como tema principal */
     }
 }
