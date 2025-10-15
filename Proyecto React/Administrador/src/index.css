@@ -373,3 +373,204 @@ footer {
     background-color: #00e676; /* Verde más claro */
     transform: translateY(-2px);
 }
+/* ================================================= */
+/* 5. Estilos de la Página de Carrito */
+/* ================================================= */
+
+.pagina-carrito-contenedor {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 2rem;
+}
+
+.seccion-carrito h1 {
+    font-size: 2.5rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Estilos de los Items */
+.contenedor-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid var(--color-background-secondary);
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--color-background-secondary);
+}
+
+.item-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #2a2a2a;
+    position: relative; /* Para posicionar el botón eliminar en móvil */
+}
+
+.item-carrito:last-child {
+    border-bottom: none;
+}
+
+.detalle-producto {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 40%;
+}
+
+/* AJUSTE CLAVE: Tamaño de la imagen del carrito */
+.imagen-carrito {
+    width: 80px;  
+    height: 80px; 
+    object-fit: contain; /* Mantiene la relación de aspecto sin cortar */
+    border-radius: 4px;
+    border: 1px solid #444; 
+}
+
+.info-item h3 {
+    font-size: 1rem;
+    color: var(--color-text-primary);
+}
+.info-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+/* Controles de Cantidad (Estilo Antiguo/Básico, se mejorará en Sección 6 si se usa ahí) */
+.controles-cantidad {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.boton-cantidad {
+    background-color: #333;
+    color: var(--color-text-primary);
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.subtotal {
+    font-weight: bold;
+    width: 15%;
+    text-align: right;
+}
+
+/* Botón Eliminar */
+.boton-eliminar {
+    background-color: transparent;
+    color: #ff4d4d;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+/* Resumen */
+.resumen-carrito {
+    text-align: right;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #333;
+}
+.resumen-carrito p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.boton-pagar {
+    padding: 0.8rem 1.5rem;
+    /* Usa la clase cta-button base */
+}
+
+/* Media Query para responsividad del Carrito */
+@media (max-width: 768px) {
+    .item-carrito {
+        flex-wrap: wrap;
+        text-align: center;
+        padding-bottom: 15px;
+    }
+    .detalle-producto, .controles-cantidad, .subtotal {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .detalle-producto {
+        justify-content: flex-start;
+    }
+    .subtotal {
+        text-align: center;
+        margin-top: 10px;
+        order: 4; 
+    }
+    .boton-eliminar {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+    }
+}
+
+/* ================================================= */
+/* 6. Estilos del Control de Cantidad Moderno (Detalle Producto) */
+/* ================================================= */
+
+.control-cantidad {
+    display: flex;
+    align-items: center;
+    border: 1px solid #333; /* Usamos un color más neutral para el borde */
+    border-radius: 6px;
+    overflow: hidden; 
+    background-color: #222; /* Fondo sutil para el control */
+    height: 40px; 
+    margin-right: 20px;
+    flex-shrink: 0; /* Evita que se encoja en el layout flex */
+}
+
+.control-cantidad .boton-cantidad { /* Sobrescribe el estilo básico del carrito */
+    background: none;
+    border: none;
+    color: var(--color-accent-green);
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 100%;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.control-cantidad .boton-cantidad:hover:not(:disabled) {
+    background-color: #1a1a1a;
+    color: #4cff9a; 
+}
+
+.control-cantidad .boton-cantidad:disabled {
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+}
+
+.cantidad-display {
+    color: var(--color-text-primary);
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0 10px;
+    width: 30px; 
+    text-align: center;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+}
+
+/* Asegura que los elementos de acción en el detalle se alineen correctamente */
+.acciones-producto {
+    display: flex;
+    align-items: center; 
+    gap: 15px;
+    margin-top: 30px;
+}
