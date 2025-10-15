@@ -7,7 +7,7 @@ export const productos = [
         nombre: 'Catan',
         categoria: 'juegos-de-mesa',
         precio: 29990,
-        imagen: 'catan.jpg',
+        imagen: 'catan.png',
         descripcion: 'Un clásico juego de estrategia donde los jugadores compiten por colonizar y expandirse en la isla de Catan.'
     },
     {

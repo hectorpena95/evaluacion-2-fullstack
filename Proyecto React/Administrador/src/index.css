@@ -1,68 +1,196 @@
+/* ================================================= */
+/* 1. Variables CSS y Reset Base - Tema Oscuro/Verde */
+/* ================================================= */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    /* Variables de Vite por defecto */
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    /* CAMBIOS CLAVE PARA EL TEMA OSCURO/VERDE */
+    --color-background-primary: #121212; /* Fondo principal muy oscuro */
+    --color-background-secondary: #1e1e1e; /* Fondo de tarjetas/filtros ligeramente más claro */
+    --color-text-primary: #e0e0e0; /* Texto principal gris claro */
+    --color-text-secondary: #a0a0a0; /* Texto secundario gris medio */
+    
+    --color-accent-blue: #00ff7f; /* Acento CLAVE: Verde brillante para títulos/acentos */
+    --color-accent-green: #00ff7f; /* Acento para precios/CTAs */
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Reset y estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------------------------- */
+/* Corrección de Layout: Asegura que el body use el color de fondo */
+/* ------------------------------------------------- */
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary); 
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+    font-weight: 500;
+    color: var(--color-accent-green); /* Enlaces en verde */
+    text-decoration: none;
+    transition: color 0.25s;
 }
 a:hover {
-  color: #535bf2;
+    color: #4cff9a; /* Un verde más claro al pasar el ratón */
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+/* ================================================= */
+/* 2. Estilos de Catálogo y Layout       */
+/* ================================================= */
+
+/* Estilos de la Cabecera/Footer */
+#main-header, footer {
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    padding: 15px 30px;
+}
+#main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+footer {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 40px;
+    border-top: 1px solid #333;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+
+/* Estilos específicos para la página de catálogo */
+.pagina-catalogo {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Estilos de la barra lateral (filtros) */
+.barra-lateral {
+    width: 250px;
+    padding: 1.5rem;
+    background-color: var(--color-background-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra oscura para contraste */
 }
 
+.barra-lateral h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--color-accent-blue);
+}
+
+.grupo-filtro {
+    margin-bottom: 2rem;
+}
+
+.grupo-filtro h3 {
+    font-size: 1.1rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.barra-lateral ul {
+    list-style: none;
+    padding: 0;
+}
+
+.barra-lateral ul li a {
+    display: block;
+    padding: 0.5rem 0;
+    color: var(--color-text-secondary);
+    transition: color 0.3s ease;
+}
+
+.barra-lateral ul li a:hover,
+.barra-lateral ul li a.activo {
+    color: var(--color-accent-green);
+    font-weight: bold;
+}
+
+/* Estilos de la sección de productos */
+.contenedor-productos {
+    flex-grow: 1;
+}
+
+.contenedor-productos h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--color-accent-blue);
+}
+
+/* Estilos de la tarjeta de producto */
+.tarjeta-producto {
+    background-color: var(--color-background-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-producto:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+.tarjeta-producto img {
+    width: 100%;
+    height: 250px; 
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.tarjeta-producto h3 {
+    font-size: 1.2rem;
+    color: var(--color-text-primary);
+    margin: 0.5rem 0;
+}
+
+.categoria-producto {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.precio-producto {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--color-accent-green);
+    margin: 0.5rem 0 1rem;
+}
+
+.cuadricula-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Estilos para el modo claro (si el navegador lo prefiere) */
 @media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+    /* Puedes definir colores de modo claro aquí si lo deseas, 
+       pero por ahora mantendremos el tema oscuro como principal */
+    :root {
+        /* No hacemos cambios drásticos para mantener el estilo oscuro */
+    }
 }
