@@ -574,3 +574,89 @@ footer {
     gap: 15px;
     margin-top: 30px;
 }
+/* ================================================= */
+/* 7. Estilos de Autenticación (Login y Registro) */
+/* (Basado en Bootstrap pero adaptado al tema Oscuro/Gamer) */
+/* ================================================= */
+
+/* Estilo general del contenedor de formularios */
+.pagina-login, 
+.pagina-registro {
+    min-height: 80vh; /* Para centrar el formulario verticalmente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+/* Adaptación de la tarjeta (card) de Bootstrap al tema oscuro */
+.pagina-login .card,
+.pagina-registro .card {
+    background-color: var(--color-background-secondary) !important; /* Fondo de tarjeta oscuro */
+    border: 1px solid var(--color-accent-green); /* Borde acentuado en verde */
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.2); /* Sombra sutil en color verde */
+}
+
+/* Títulos dentro de la tarjeta */
+.pagina-login .card-title,
+.pagina-registro .card-title {
+    color: var(--color-accent-green) !important; /* Título en verde brillante */
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Estilo de las etiquetas (labels) */
+.form-label {
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Estilo de los campos de entrada (inputs) de Bootstrap */
+.form-control {
+    background-color: #2a2a2a; /* Fondo del input un poco más claro que el fondo principal */
+    color: var(--color-text-primary);
+    border: 1px solid #444; /* Borde oscuro y sutil */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    background-color: #2a2a2a;
+    color: var(--color-text-primary);
+    border-color: var(--color-accent-green); /* Borde verde al enfocar */
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 127, 0.25); /* Sombra de enfoque verde (clase Bootstrap modificada) */
+}
+
+/* Estilo del botón principal de acción (Ingresar / Registrarme) */
+.btn-success {
+    /* Sobrescribe el color verde por defecto de Bootstrap con el verde de acento */
+    background-color: var(--color-accent-green) !important;
+    border-color: var(--color-accent-green) !important;
+    color: var(--color-background-primary) !important; /* Texto oscuro en botón brillante */
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #00e676 !important; /* Verde más claro al hacer hover */
+    border-color: #00e676 !important;
+    transform: translateY(-2px);
+}
+
+/* Estilo de enlaces secundarios (¿Ya tienes cuenta? / Regístrate aquí) */
+.text-info {
+    color: var(--color-accent-blue) !important; /* Usamos el azul/verde de acento para el enlace */
+    font-weight: 500;
+}
+
+.text-info:hover {
+    text-decoration: underline !important;
+}
+
+/* Estilo para mensajes de alerta de error */
+.alert-danger {
+    background-color: #58151c; /* Fondo rojo oscuro */
+    color: #ffb3b3; /* Texto rojo claro */
+    border-color: #8c1c24;
+}
