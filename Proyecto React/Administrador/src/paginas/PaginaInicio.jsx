@@ -1,10 +1,7 @@
-// src/paginas/PaginaInicio.jsx
 import React from 'react';
-import { Link } from 'react-router-dom'; // Necesitas Link para los botones de navegación
+import { Link } from 'react-router-dom'; 
 
-/**
- * Componente de la Página de Inicio (Landing Page).
- */
+
 const PaginaInicio = () => {
     return (
         <main className="pagina-inicio">

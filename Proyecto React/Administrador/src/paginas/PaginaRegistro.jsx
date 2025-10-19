@@ -1,8 +1,6 @@
-// src/paginas/PaginaRegistro.jsx
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// Asegúrate de que los estilos de Bootstrap estén activos para las clases 'container', 'row', etc.
 
 const PaginaRegistro = () => {
     const [formData, setFormData] = useState({
@@ -17,23 +15,20 @@ const PaginaRegistro = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        setError(null); // Limpiar errores al escribir
+        setError(null); 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // 1. Validación simple de Frontend
         if (formData.password !== formData.confirmPassword) {
             setError("Las contraseñas no coinciden.");
             return;
         }
 
-        // 2. Lógica de registro (conexión con el Backend)
         setLoading(true);
         setError(null);
 
-        // NOTA: Debes reemplazar esta URL con la URL REAL de tu API REST
         const API_URL = 'http://localhost:3000/api/auth/register'; 
 
         try {
@@ -52,13 +47,11 @@ const PaginaRegistro = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                // Si el backend devuelve un error 400, 500, etc.
                 throw new Error(data.message || 'Error en el registro. Intente de nuevo.');
             }
 
-            // Registro exitoso
             alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
-            navigate('/login'); // Redirigir al login
+            navigate('/login'); 
             
         } catch (err) {
             console.error('Error al registrar:', err);

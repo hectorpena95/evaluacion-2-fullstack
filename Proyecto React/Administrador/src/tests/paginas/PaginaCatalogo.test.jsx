@@ -5,12 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import PaginaCatalogo from '../../paginas/PaginaCatalogo';
 import { vi } from 'vitest';
 
-// ----------------------------------------------------------------------------------
-// CORRECCIÓN CLAVE: El contenido del mock debe estar dentro de la función de vi.mock()
-// ----------------------------------------------------------------------------------
-
 vi.mock('../../datos/datosProductos', () => {
-    // Definimos las variables DENTRO de la función para evitar el ReferenceError
     const mockProductos = [
         { id: 'JM001', nombre: 'Catan', categoria: 'juegos-de-mesa', precio: 29990, imagen: 'catan.png' },
         { id: 'JM002', nombre: 'Carcassonne', categoria: 'juegos-de-mesa', precio: 24990, imagen: 'carcassonne.jpg' },
@@ -26,16 +21,12 @@ vi.mock('../../datos/datosProductos', () => {
         { etiqueta: 'Inexistente', valor: 'inexistente' },
     ];
 
-    // Exportamos el mock con todas las funciones/variables necesarias
     return {
         productos: mockProductos,
         categorias: mockCategorias,
-        // Mock de la función de formato (necesaria para FiltrosLateral)
         formatearPrecio: vi.fn(precio => `$${precio.toLocaleString('es-CL')}`),
     };
 });
-
-// ----------------------------------------------------------------------------------
 
 const renderPagina = () => {
     render(
@@ -45,16 +36,14 @@ const renderPagina = () => {
     );
 };
 
-describe('PaginaCatalogo (4 Tests)', () => {
+describe('PaginaCatalogo (5 Tests)', () => {
 
-    // Test 6
     test('6. Debe renderizar el título de la página y los productos de la fuente de datos local', () => {
         renderPagina();
         expect(screen.getByText(/Catálogo de Productos/i)).toBeInTheDocument();
         expect(screen.getByText('Catan')).toBeInTheDocument();
     });
 
-    // Test 7 (Clic en enlace de categoría)
     test('7. Debe filtrar los productos por categoría al hacer clic en un enlace', async () => {
         renderPagina();
         expect(screen.getByText('Catan')).toBeInTheDocument(); 
@@ -69,30 +58,22 @@ describe('PaginaCatalogo (4 Tests)', () => {
         expect(screen.queryByText('Catan')).not.toBeInTheDocument();
     });
     
-    // Test 8 (Cambio en input de rango)
     test('8. Debe filtrar los productos por rango de precio', async () => {
         renderPagina();
         
-        // CORRECCIÓN 1: El slider no tiene nombre accesible
         const rangeInput = screen.getByRole('slider', { name: '' });
         
-        // 1. Verificar estado inicial: PlayStation 5 ($549.990) está visible
-        //    (Ya que 549.990 >= 500.000, asumiendo que el filtro muestra precios MAYORES O IGUALES)
         expect(screen.getByText('PlayStation 5')).toBeInTheDocument();
         
-        // 2. Aplicar filtro estricto: Simular el cambio de valor a un límite inferior (ej. 100000).
-        //    Esto debería OCULTAR productos caros como la PlayStation 5.
         fireEvent.change(rangeInput, { target: { value: '100000' } });
 
-        // 3. Esperar a que el producto caro (PlayStation 5: 549990) se oculte
         await waitFor(() => {
             expect(screen.queryByText('PlayStation 5')).not.toBeInTheDocument();
         });
 
-        // 4. Verificar que un producto barato (Catan: 29990) SÍ esté
         expect(screen.getByText('Catan')).toBeInTheDocument();
     });
-    // Test 9 (Filtro sin resultados)
+
     test('9. Debe mostrar el mensaje de "No se encontraron productos" si el filtro no coincide', async () => {
         renderPagina();
         expect(screen.getByText('Catan')).toBeInTheDocument(); 
@@ -105,5 +86,30 @@ describe('PaginaCatalogo (4 Tests)', () => {
         });
 
         expect(screen.queryByText('Catan')).not.toBeInTheDocument();
+    });
+
+    test('10. Debe actualizar el texto del precio al mover el slider', async () => {
+        renderPagina();
+        
+        const rangeInput = screen.getByRole('slider', { name: '' }); 
+        
+        const valorInicial = '$1.500.000';
+        const precioDisplay = screen.getByText(valorInicial); 
+
+        expect(precioDisplay).toBeInTheDocument();
+        expect(rangeInput).toHaveValue('1500000'); 
+
+        const nuevoValorNumerico = '750000';
+        const nuevoValorFormateado = '$750.000';
+
+        fireEvent.change(rangeInput, { target: { value: nuevoValorNumerico } });
+        
+        await waitFor(() => {
+            expect(screen.getByText(nuevoValorFormateado)).toBeInTheDocument();
+        });
+
+        expect(rangeInput).toHaveValue(nuevoValorNumerico);
+        
+        expect(screen.queryByText(valorInicial)).not.toBeInTheDocument();
     });
 });

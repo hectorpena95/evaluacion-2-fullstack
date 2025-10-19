@@ -4,10 +4,6 @@ import React from 'react';
 import { useCarrito } from '../context/CarritoContext.jsx'; 
 import { Link } from 'react-router-dom'; // Para el link "Volver al catálogo"
 
-// =========================================================
-// 1. FUNCIÓN DE UTILIDAD PARA RESOLVER RUTAS DE IMAGEN
-// (Vite necesita esto para encontrar las imágenes dentro de 'src/assets/img')
-// =========================================================
 const getAssetUrl = (fileName) => {
     // La ruta es relativa a este componente (src/paginas).
     // Subimos a 'src/' (../) y entramos a 'assets/img/'
@@ -16,7 +12,6 @@ const getAssetUrl = (fileName) => {
 // =========================================================
 
 
-// Componente para renderizar una fila de producto en el carrito
 const ItemCarrito = ({ item, eliminarItem }) => { 
     const formatPrice = (price) => `$${price.toFixed(2)} CLP`;
 
@@ -60,7 +55,6 @@ const ItemCarrito = ({ item, eliminarItem }) => {
 const PaginaCarrito = () => {
     const { carrito, eliminarItem } = useCarrito(); 
 
-    // Cálculo del total del carrito basado en el estado real
     const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
     const totalFormateado = `$${total.toFixed(2)} CLP`;
     

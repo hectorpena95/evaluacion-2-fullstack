@@ -1,4 +1,3 @@
-// src/paginas/PaginaLogin.jsx
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,7 +22,6 @@ const PaginaLogin = () => {
         setLoading(true);
         setError(null);
 
-        // NOTA: Debes reemplazar esta URL con la URL REAL de tu API REST
         const API_URL = 'http://localhost:3000/api/auth/login'; 
 
         try {
@@ -41,14 +39,12 @@ const PaginaLogin = () => {
                 throw new Error(data.message || 'Credenciales inválidas. Intente de nuevo.');
             }
 
-            // Login exitoso: Aquí se maneja el token JWT
             console.log('Login exitoso. Token:', data.token);
             
-            // GUARDAR EL TOKEN EN EL ALMACENAMIENTO LOCAL para la autenticación
             localStorage.setItem('userToken', data.token); 
             
             alert('¡Inicio de sesión exitoso!');
-            navigate('/'); // Redirigir a la página de inicio o perfil
+            navigate('/'); 
             
         } catch (err) {
             console.error('Error al iniciar sesión:', err);

@@ -1,4 +1,3 @@
-// src/paginas/PaginaCatalogo.jsx
 import React, { useState, useMemo } from 'react';
 import { productos } from '../datos/datosProductos';
 import TarjetaProducto from '../components/TarjetaProducto';
@@ -13,8 +12,7 @@ const PaginaCatalogo = () => {
         precioMaximo: PRECIO_MAXIMO_INICIAL,
     });
 
-    // 2. Lógica de Filtrado (Reemplaza la función aplicarFiltros)
-    // Usamos useMemo para optimizar y recalcular la lista SÓLO cuando los filtros cambian.
+    
     const productosFiltrados = useMemo(() => {
         return productos.filter(producto => {
             

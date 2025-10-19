@@ -1,40 +1,28 @@
 import React, { useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-// Importamos los datos y la utilidad de formateo de precio
 import { productos, formatearPrecio } from '../datos/datosProductos'; 
-// Importamos el hook del Contexto del Carrito
 import { useCarrito } from '../context/CarritoContext.jsx'; 
 
-// Función para obtener la URL de la imagen, necesaria en proyectos Vite/React
 const getImageUrl = (name) => {
-    // La ruta es relativa a este componente (src/paginas/).
-    // Sube a 'src/' (../) y entra a 'assets/img/'
+  
     return new URL(`../assets/img/${name}`, import.meta.url).href;
 }
 
 const PaginaDetalleProducto = () => {
-    // 1. Obtener la función para agregar items del contexto global
     const { agregarItem } = useCarrito(); 
     
-    // 2. ESTADO LOCAL: Cantidad a agregar, por defecto 1
     const [cantidad, setCantidad] = useState(1);
     
-    // Obtener el ID del producto de la URL
     const { id } = useParams();
 
-    // 3. Buscar el producto en la lista usando useMemo
     const producto = useMemo(() => {
-        // Asegúrate de que el tipo de ID coincida: si los IDs son números, usa parseInt(id)
         return productos.find(p => p.id === id); 
     }, [id]);
 
-    // 4. HANDLER para agregar el producto al carrito
     const handleAgregarCarrito = () => {
         if (producto && cantidad > 0) {
-            // Llama a la función global del contexto para actualizar el carrito
             agregarItem(producto, cantidad); 
             alert(`¡${cantidad} x ${producto.nombre} agregado al carrito!`);
-            // Opcional: reiniciar la cantidad a 1 después de agregar
             setCantidad(1); 
         } else {
             console.warn("No se puede agregar al carrito: producto nulo o cantidad inválida.");
@@ -42,7 +30,6 @@ const PaginaDetalleProducto = () => {
     };
 
 
-    // Manejar el caso de producto no encontrado (Simulación de un 404)
     if (!producto) {
         return (
             <main className="pagina-detalle-producto">
@@ -57,7 +44,6 @@ const PaginaDetalleProducto = () => {
         );
     }
 
-    // Desestructurar los datos del producto encontrado
     const { nombre, categoria, precio, imagen, descripcion } = producto;
 
     return (
