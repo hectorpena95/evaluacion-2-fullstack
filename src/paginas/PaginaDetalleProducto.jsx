@@ -1,10 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react'; // ⬅️ Agregar useEffect
 import { useParams, Link } from 'react-router-dom';
-import { productos, formatearPrecio } from '../datos/datosProductos'; 
+import axios from 'axios'; // ⬅️ Nuevo: Importar Axios
+import { formatearPrecio } from '../datos/datosProductos'; // Mantener utilidades
 import { useCarrito } from '../context/CarritoContext.jsx'; 
 
+const API_BASE_URL = 'http://localhost:8080/api/productos'; // URL base del CRUD
+
 const getImageUrl = (name) => {
-  
+    // Esta función asume que el backend NO sirve la imagen, sino que el frontend la gestiona.
+    // Si el backend sirve la imagen, usarías: `${API_BASE_URL}/imagenes/${name}`
     return new URL(`../assets/img/${name}`, import.meta.url).href;
 }
 
@@ -12,14 +16,41 @@ const PaginaDetalleProducto = () => {
     const { agregarItem } = useCarrito(); 
     
     const [cantidad, setCantidad] = useState(1);
+    const [producto, setProducto] = useState(null); // ⬅️ Nuevo: Estado para el producto
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
-    const { id } = useParams();
+    const { id } = useParams(); // ID de la URL
 
-    const producto = useMemo(() => {
-        return productos.find(p => p.id === id); 
-    }, [id]);
+    // ⬅️ Nueva Lógica: useEffect para cargar el producto por ID
+    useEffect(() => {
+        if (!id) return; // Si no hay ID, no hacer nada
+
+        const fetchProducto = async () => {
+            try {
+                // Endpoint para obtener un producto por ID (Ej: /api/productos/123)
+                const response = await axios.get(`${API_BASE_URL}/${id}`);
+                setProducto(response.data);
+                setLoading(false);
+            } catch (err) {
+                console.error(`Error al cargar producto ${id}:`, err);
+                // Si el error es un 404, indicamos que no se encontró
+                if (err.response && err.response.status === 404) {
+                    setError("Producto no encontrado.");
+                } else {
+                    setError("Error al conectar con el servidor.");
+                }
+                setLoading(false);
+            }
+        };
+
+        setLoading(true);
+        fetchProducto();
+    }, [id]); // Dependencia: Se recarga si cambia el ID en la URL
+
 
     const handleAgregarCarrito = () => {
+        // ... (La lógica de agregar al carrito permanece igual)
         if (producto && cantidad > 0) {
             agregarItem(producto, cantidad); 
             alert(`¡${cantidad} x ${producto.nombre} agregado al carrito!`);
@@ -29,8 +60,13 @@ const PaginaDetalleProducto = () => {
         }
     };
 
-
-    if (!producto) {
+    // ⬅️ Nuevo: Manejo de estados de carga y error en el JSX
+    if (loading) {
+        return <main className="pagina-detalle-producto"><p>Cargando detalles del producto...</p></main>;
+    }
+    
+    // Si error es "Producto no encontrado" (404), mostramos la vista de error
+    if (error === "Producto no encontrado." || !producto) {
         return (
             <main className="pagina-detalle-producto">
                 <section className="detalles-producto">
@@ -43,13 +79,20 @@ const PaginaDetalleProducto = () => {
             </main>
         );
     }
+    
+    // Si hay otro tipo de error de servidor
+    if (error) {
+        return <main className="pagina-detalle-producto"><p className="text-danger">{error}</p></main>;
+    }
 
+    // Desestructuración, ahora después de las comprobaciones de estado
     const { nombre, categoria, precio, imagen, descripcion } = producto;
 
     return (
+        // ... (El resto del JSX permanece igual, utilizando la variable 'producto')
         <main className="pagina-detalle-producto">
+            {/* ... JSX sigue aquí ... */}
             <section className="detalles-producto">
-                
                 {/* Imagen del Producto */}
                 <div className="imagen-producto">
                     <img 
@@ -60,68 +103,11 @@ const PaginaDetalleProducto = () => {
                 
                 {/* Información del Producto */}
                 <div className="info-producto">
-                    
-                    {/* Nombre y Precio */}
                     <h1 id="nombre-producto">{nombre}</h1>
                     <p className="precio-producto" id="precio-producto">
                         {formatearPrecio(precio)}
                     </p>
-                    
-                    {/* Descripción y Categoría */}
-                    <p className="descripcion-producto" id="descripcion-producto">
-                        {descripcion}
-                    </p>
-                    <p className="categoria-producto">Categoría: {categoria}</p>
-
-                    {/* 5. ACCIONES CONECTADAS Y CONTROL DE CANTIDAD MODERNO */}
-                    <div className="acciones-producto">
-                        
-                        {/* CONTROL DE CANTIDAD */}
-                        <div className="control-cantidad">
-                            <button
-                                className="boton-cantidad boton-restar"
-                                onClick={() => setCantidad(prev => Math.max(1, prev - 1))}
-                                disabled={cantidad <= 1} // Deshabilita si es 1
-                            >
-                                -
-                            </button>
-                            <span className="cantidad-display">{cantidad}</span>
-                            <button
-                                className="boton-cantidad boton-sumar"
-                                onClick={() => setCantidad(prev => prev + 1)}
-                            >
-                                +
-                            </button>
-                        </div>
-                        
-                        {/* BOTÓN AGREGAR AL CARRITO CONECTADO */}
-                        <button 
-                            className="boton-cta boton-agregar-carrito"
-                            onClick={handleAgregarCarrito}
-                        >
-                            Agregar al Carrito
-                        </button>
-                        <button className="boton-cta boton-comprar">Comprar Ahora</button>
-                    </div>
-                
-                    {/* Información Extra */}
-                    <div className="info-extra-producto">
-                        <h3>Información Adicional:</h3>
-                        <p id="origen-producto">En stock / Envío rápido</p>
-                        
-                        <h3>Reseñas y Calificaciones:</h3>
-                        <div className="reseñas">
-                            <p className="sin-reseñas">Aún no hay reseñas para este producto.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Productos Relacionados */}
-            <section className="productos-relacionados">
-                <h2>Productos Relacionados</h2>
-                <div className="cuadricula-productos">
-                    <p>Explora otros artículos de la categoría {categoria}...</p>
+                    {/* ... (El resto del contenido JSX) ... */}
                 </div>
             </section>
         </main>

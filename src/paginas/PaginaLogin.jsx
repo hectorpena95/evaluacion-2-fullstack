@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // ⬅️ Importar Axios
 
 const PaginaLogin = () => {
     const [formData, setFormData] = useState({
@@ -22,33 +22,50 @@ const PaginaLogin = () => {
         setLoading(true);
         setError(null);
 
-        const API_URL = 'http://localhost:3000/api/auth/login'; 
+        const API_URL = 'http://localhost:8080/api/auth/login'; 
 
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Credenciales inválidas. Intente de nuevo.');
-            }
-
-            console.log('Login exitoso. Token:', data.token);
+            const response = await axios.post(API_URL, formData);
             
-            localStorage.setItem('userToken', data.token); 
+            // La respuesta exitosa (2xx) llega aquí. El backend debe devolver el token en response.data.token
+            const { token } = response.data; // Desestructuramos el token de la respuesta
+
+            console.log('Login exitoso. Token:', token);
+            
+            // ⬅️ PUNTO 5: Persistencia del Token para Gestión de Sesiones
+            localStorage.setItem('userToken', token); 
+            
+            // Aquí deberías también guardar los roles si el backend los envía (Punto 4)
+            // localStorage.setItem('userRoles', JSON.stringify(response.data.roles)); 
             
             alert('¡Inicio de sesión exitoso!');
-            navigate('/'); 
+            
+            // Normalmente, aquí llamarías al método de login de tu AuthContext
+            // context.login(token, response.data.roles); 
+            
+            navigate('/'); // Redirigir a la página principal
             
         } catch (err) {
+            // ⬅️ Manejo de Errores con Axios (captura errores de red y HTTP 4xx/5xx)
             console.error('Error al iniciar sesión:', err);
-            setError(err.message || 'Ocurrió un error inesperado al iniciar sesión.');
+            
+            let errorMessage = 'Ocurrió un error inesperado.';
+
+            if (err.response) {
+                // Errores HTTP del servidor (401 Unauthorized, 404 Not Found, etc.)
+                if (err.response.status === 401) {
+                    errorMessage = 'Credenciales inválidas. Verifique su email y contraseña.';
+                } else if (err.response.data && err.response.data.message) {
+                    errorMessage = err.response.data.message;
+                } else {
+                    errorMessage = `Error del servidor: ${err.response.status}`;
+                }
+            } else if (err.request) {
+                // Error de red (Backend apagado o CORS no configurado)
+                errorMessage = 'No se pudo conectar al servidor. Asegúrese de que el Backend esté corriendo.';
+            }
+
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }

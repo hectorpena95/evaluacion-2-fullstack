@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Importar la librería Axios
 
 const PaginaRegistro = () => {
     const [formData, setFormData] = useState({
@@ -21,6 +21,7 @@ const PaginaRegistro = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        // 1. Validación local de contraseñas
         if (formData.password !== formData.confirmPassword) {
             setError("Las contraseñas no coinciden.");
             return;
@@ -29,33 +30,44 @@ const PaginaRegistro = () => {
         setLoading(true);
         setError(null);
 
-        const API_URL = 'http://localhost:3000/api/auth/register'; 
+        // URL del Backend de Spring Boot (Puerto 8080)
+        const API_URL = 'http://localhost:8080/api/auth/register'; 
 
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    nombre: formData.nombre,
-                    email: formData.email,
-                    password: formData.password,
-                }),
+            // 2. Petición POST con Axios
+            // Axios envía el objeto como JSON y maneja el encabezado 'Content-Type' automáticamente.
+            const response = await axios.post(API_URL, {
+                nombre: formData.nombre,
+                email: formData.email,
+                password: formData.password,
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Error en el registro. Intente de nuevo.');
-            }
+            // Si Axios no lanza error, la respuesta es exitosa (2xx)
+            
+            // Opcional: Puedes revisar la respuesta del backend
+            console.log('Respuesta del Backend:', response.data);
 
             alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
             navigate('/login'); 
             
         } catch (err) {
+            // 3. Manejo de Errores con Axios
             console.error('Error al registrar:', err);
-            setError(err.message || 'Ocurrió un error inesperado.');
+            
+            let errorMessage = 'Ocurrió un error inesperado. Verifique la conexión con el Backend.';
+
+            // Intenta extraer el mensaje de error de la respuesta del Backend (Spring Boot)
+            if (err.response && err.response.data && err.response.data.message) {
+                errorMessage = err.response.data.message;
+            } else if (err.response) {
+                // Captura errores HTTP genéricos (404, 500)
+                errorMessage = `Error ${err.response.status}: ${err.response.statusText}.`;
+            } else if (err.request) {
+                // Captura errores de red (si el backend está apagado)
+                errorMessage = 'No se pudo conectar al servidor. Asegúrese de que el Backend esté corriendo en el puerto 8080.';
+            }
+
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
