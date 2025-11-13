@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // ⬅️ Importar Axios
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext'; // ⬅️ Nuevo: Importar useAuth
 
 const PaginaLogin = () => {
+    // ⬅️ Obtener la función de login del contexto
+    const { login } = useAuth(); 
+
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -27,33 +31,34 @@ const PaginaLogin = () => {
         try {
             const response = await axios.post(API_URL, formData);
             
-            // La respuesta exitosa (2xx) llega aquí. El backend debe devolver el token en response.data.token
-            const { token } = response.data; // Desestructuramos el token de la respuesta
+            // 1. Obtener el token de la respuesta
+            const { token } = response.data; 
+
+            if (!token) {
+                throw new Error("Respuesta de login inválida: Token no recibido.");
+            }
 
             console.log('Login exitoso. Token:', token);
             
-            // ⬅️ PUNTO 5: Persistencia del Token para Gestión de Sesiones
-            localStorage.setItem('userToken', token); 
+            // 2. Usar la función login del AuthContext
+            // Esto guarda el token en localStorage, actualiza el estado global
+            // y configura el header de Axios para futuras peticiones.
+            login(token); 
             
-            // Aquí deberías también guardar los roles si el backend los envía (Punto 4)
-            // localStorage.setItem('userRoles', JSON.stringify(response.data.roles)); 
+            // 3. Opcional: Mostrar un mensaje temporal de éxito (reemplazando el alert)
+            // Ya que no podemos usar alert(), usaremos la consola y una redirección
+            console.log('¡Inicio de sesión exitoso!');
             
-            alert('¡Inicio de sesión exitoso!');
-            
-            // Normalmente, aquí llamarías al método de login de tu AuthContext
-            // context.login(token, response.data.roles); 
-            
-            navigate('/'); // Redirigir a la página principal
+            // 4. Redirigir a la página principal (o al dashboard de admin si hasRole('ADMIN') es true)
+            navigate('/'); 
             
         } catch (err) {
-            // ⬅️ Manejo de Errores con Axios (captura errores de red y HTTP 4xx/5xx)
             console.error('Error al iniciar sesión:', err);
             
             let errorMessage = 'Ocurrió un error inesperado.';
 
             if (err.response) {
-                // Errores HTTP del servidor (401 Unauthorized, 404 Not Found, etc.)
-                if (err.response.status === 401) {
+                if (err.response.status === 401 || err.response.status === 403) {
                     errorMessage = 'Credenciales inválidas. Verifique su email y contraseña.';
                 } else if (err.response.data && err.response.data.message) {
                     errorMessage = err.response.data.message;
@@ -61,7 +66,6 @@ const PaginaLogin = () => {
                     errorMessage = `Error del servidor: ${err.response.status}`;
                 }
             } else if (err.request) {
-                // Error de red (Backend apagado o CORS no configurado)
                 errorMessage = 'No se pudo conectar al servidor. Asegúrese de que el Backend esté corriendo.';
             }
 
