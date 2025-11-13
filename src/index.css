@@ -1,0 +1,662 @@
+/* ================================================= */
+/* 1. Variables CSS y Reset Base - Tema Oscuro/Verde */
+/* ================================================= */
+
+:root {
+    /* Variables de Vite por defecto */
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* CAMBIOS CLAVE PARA EL TEMA OSCURO/VERDE */
+    --color-background-primary: #121212; /* Fondo principal muy oscuro */
+    --color-background-secondary: #1e1e1e; /* Fondo de tarjetas/filtros ligeramente más claro */
+    --color-text-primary: #e0e0e0; /* Texto principal gris claro */
+    --color-text-secondary: #a0a0a0; /* Texto secundario gris medio */
+    
+    --color-accent-blue: #00ff7f; /* Acento CLAVE: Verde brillante para títulos/acentos */
+    --color-accent-green: #00ff7f; /* Acento para precios/CTAs */
+}
+
+/* Reset y estilos generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------------------------- */
+/* Corrección de Layout: Asegura que el body use el color de fondo */
+/* ------------------------------------------------- */
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    /* CLAVE: Añadir width: 100% para evitar problemas de limitación */
+    width: 100%; 
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary); 
+}
+
+/* * CLAVE: Asegurarse de que el contenedor raíz de React (#root) 
+ * también ocupe el 100% para que los children (como el Header) no se limiten.
+ */
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
+
+a {
+    font-weight: 500;
+    color: var(--color-accent-green); /* Enlaces en verde */
+    text-decoration: none;
+    transition: color 0.25s;
+}
+a:hover {
+    color: #4cff9a; /* Un verde más claro al pasar el ratón */
+}
+
+/* ================================================= */
+/* 2. Estilos de Catálogo y Layout       */
+/* ================================================= */
+
+/* Estilos de la Cabecera/Footer */
+#main-header, footer {
+    /* Estas propiedades aseguran que el fondo OCUPE TODO el ancho */
+    width: 100%; 
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    padding: 15px 0; /* Solo padding vertical */
+}
+
+#main-header .contenedor-interno { /* NUEVA CLASE PARA EL CONTENIDO CENTRADO */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px; /* Limita el contenido INTERNO */
+    margin: 0 auto;
+    padding: 0 30px; /* Añadimos el padding lateral DENTRO del contenedor centrado */
+}
+
+footer {
+    text-align: center;
+    padding: 1rem 0; /* Solo padding vertical */
+    margin-top: 40px;
+    border-top: 1px solid #333;
+}
+
+/* Estilos específicos para la página de catálogo */
+.pagina-catalogo {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilos de la barra lateral (filtros) */
+.barra-lateral {
+    width: 250px;
+    padding: 1.5rem;
+    background-color: var(--color-background-secondary);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Sombra oscura para contraste */
+}
+
+.barra-lateral h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--color-accent-blue);
+}
+
+.grupo-filtro {
+    margin-bottom: 2rem;
+}
+
+.grupo-filtro h3 {
+    font-size: 1.1rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.barra-lateral ul {
+    list-style: none;
+    padding: 0;
+}
+
+.barra-lateral ul li a {
+    display: block;
+    padding: 0.5rem 0;
+    color: var(--color-text-secondary);
+    transition: color 0.3s ease;
+}
+
+.barra-lateral ul li a:hover,
+.barra-lateral ul li a.activo {
+    color: var(--color-accent-green);
+    font-weight: bold;
+}
+
+/* Estilos de la sección de productos */
+.contenedor-productos {
+    flex-grow: 1;
+}
+
+.contenedor-productos h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--color-accent-blue);
+}
+
+/* Estilos de la tarjeta de producto */
+.tarjeta-producto {
+    background-color: var(--color-background-secondary);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-producto:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+}
+
+.tarjeta-producto img {
+    width: 100%;
+    height: 250px; 
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.tarjeta-producto h3 {
+    font-size: 1.2rem;
+    color: var(--color-text-primary);
+    margin: 0.5rem 0;
+}
+
+.categoria-producto {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.precio-producto {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--color-accent-green);
+    margin: 0.5rem 0 1rem;
+}
+
+.cuadricula-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* ================================================= */
+/* 3. Estilos de Detalle del Producto (Ajuste de tamaño) */
+/* ================================================= */
+
+.pagina-detalle-producto {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.detalles-producto {
+    display: flex;
+    gap: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--color-text-secondary);
+}
+
+.imagen-producto {
+    flex-shrink: 0; 
+    width: 400px; 
+    max-width: 40%; 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.imagen-producto img {
+    width: 100%; 
+    height: auto;
+    display: block;
+}
+
+.info-producto {
+    flex-grow: 1;
+}
+
+.info-producto h1 {
+    font-size: 2.5rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.precio-producto {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-accent-green);
+    margin-bottom: 1.5rem;
+}
+
+.descripcion-producto {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: var(--color-text-primary);
+}
+
+.acciones-producto button {
+    padding: 1rem 1.5rem;
+    margin-right: 1rem;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.boton-agregar-carrito {
+    background-color: var(--color-accent-green);
+    color: var(--color-background-primary);
+}
+.boton-comprar {
+    background-color: var(--color-accent-blue);
+    color: var(--color-background-primary);
+}
+
+.info-extra-producto {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-background-secondary);
+}
+.info-extra-producto h3 {
+    color: var(--color-accent-blue);
+    margin-top: 1rem;
+    font-size: 1.3rem;
+}
+
+/* Estilos de Productos Relacionados */
+.productos-relacionados {
+    margin-top: 3rem;
+}
+.productos-relacionados h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--color-accent-blue);
+}
+
+/* Estilos de media query (mantener el modo oscuro como base) */
+@media (prefers-color-scheme: light) {
+    :root {
+        /* No hacemos cambios drásticos para mantener el estilo oscuro/verde como tema principal */
+    }
+}
+
+/* ================================================= */
+/* 4. Estilos de la Página de Inicio (Landing Page) */
+/* ================================================= */
+
+.pagina-inicio {
+    /* Aquí limitamos el ancho del contenido de la Home */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.hero-section {
+    padding: 80px 40px;
+    background-color: var(--color-background-secondary);
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.hero-section h2 {
+    font-size: 3.5rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.hero-section p {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-bottom: 2rem;
+}
+
+.community-section {
+    padding: 60px 40px;
+    background-color: #2a2a2a; /* Fondo ligeramente diferente para contraste */
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.community-section h2 {
+    font-size: 2.5rem;
+    color: var(--color-accent-green);
+    margin-bottom: 0.5rem;
+}
+
+.community-section p {
+    font-size: 1.2rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Estilo general para botones CTA */
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    background-color: var(--color-accent-green);
+    color: var(--color-background-primary); /* Texto oscuro/claro */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+    background-color: #00e676; /* Verde más claro */
+    transform: translateY(-2px);
+}
+/* ================================================= */
+/* 5. Estilos de la Página de Carrito */
+/* ================================================= */
+
+.pagina-carrito-contenedor {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 2rem;
+}
+
+.seccion-carrito h1 {
+    font-size: 2.5rem;
+    color: var(--color-accent-blue);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Estilos de los Items */
+.contenedor-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border: 1px solid var(--color-background-secondary);
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--color-background-secondary);
+}
+
+.item-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #2a2a2a;
+    position: relative; /* Para posicionar el botón eliminar en móvil */
+}
+
+.item-carrito:last-child {
+    border-bottom: none;
+}
+
+.detalle-producto {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 40%;
+}
+
+/* AJUSTE CLAVE: Tamaño de la imagen del carrito */
+.imagen-carrito {
+    width: 80px;  
+    height: 80px; 
+    object-fit: contain; /* Mantiene la relación de aspecto sin cortar */
+    border-radius: 4px;
+    border: 1px solid #444; 
+}
+
+.info-item h3 {
+    font-size: 1rem;
+    color: var(--color-text-primary);
+}
+.info-item p {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+/* Controles de Cantidad (Estilo Antiguo/Básico, se mejorará en Sección 6 si se usa ahí) */
+.controles-cantidad {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.boton-cantidad {
+    background-color: #333;
+    color: var(--color-text-primary);
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.subtotal {
+    font-weight: bold;
+    width: 15%;
+    text-align: right;
+}
+
+/* Botón Eliminar */
+.boton-eliminar {
+    background-color: transparent;
+    color: #ff4d4d;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+/* Resumen */
+.resumen-carrito {
+    text-align: right;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #333;
+}
+.resumen-carrito p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+.boton-pagar {
+    padding: 0.8rem 1.5rem;
+    /* Usa la clase cta-button base */
+}
+
+/* Media Query para responsividad del Carrito */
+@media (max-width: 768px) {
+    .item-carrito {
+        flex-wrap: wrap;
+        text-align: center;
+        padding-bottom: 15px;
+    }
+    .detalle-producto, .controles-cantidad, .subtotal {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .detalle-producto {
+        justify-content: flex-start;
+    }
+    .subtotal {
+        text-align: center;
+        margin-top: 10px;
+        order: 4; 
+    }
+    .boton-eliminar {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+    }
+}
+
+/* ================================================= */
+/* 6. Estilos del Control de Cantidad Moderno (Detalle Producto) */
+/* ================================================= */
+
+.control-cantidad {
+    display: flex;
+    align-items: center;
+    border: 1px solid #333; /* Usamos un color más neutral para el borde */
+    border-radius: 6px;
+    overflow: hidden; 
+    background-color: #222; /* Fondo sutil para el control */
+    height: 40px; 
+    margin-right: 20px;
+    flex-shrink: 0; /* Evita que se encoja en el layout flex */
+}
+
+.control-cantidad .boton-cantidad { /* Sobrescribe el estilo básico del carrito */
+    background: none;
+    border: none;
+    color: var(--color-accent-green);
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 100%;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.control-cantidad .boton-cantidad:hover:not(:disabled) {
+    background-color: #1a1a1a;
+    color: #4cff9a; 
+}
+
+.control-cantidad .boton-cantidad:disabled {
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+}
+
+.cantidad-display {
+    color: var(--color-text-primary);
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 0 10px;
+    width: 30px; 
+    text-align: center;
+    border-left: 1px solid #333;
+    border-right: 1px solid #333;
+}
+
+/* Asegura que los elementos de acción en el detalle se alineen correctamente */
+.acciones-producto {
+    display: flex;
+    align-items: center; 
+    gap: 15px;
+    margin-top: 30px;
+}
+/* ================================================= */
+/* 7. Estilos de Autenticación (Login y Registro) */
+/* (Basado en Bootstrap pero adaptado al tema Oscuro/Gamer) */
+/* ================================================= */
+
+/* Estilo general del contenedor de formularios */
+.pagina-login, 
+.pagina-registro {
+    min-height: 80vh; /* Para centrar el formulario verticalmente */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+/* Adaptación de la tarjeta (card) de Bootstrap al tema oscuro */
+.pagina-login .card,
+.pagina-registro .card {
+    background-color: var(--color-background-secondary) !important; /* Fondo de tarjeta oscuro */
+    border: 1px solid var(--color-accent-green); /* Borde acentuado en verde */
+    box-shadow: 0 0 20px rgba(0, 255, 127, 0.2); /* Sombra sutil en color verde */
+}
+
+/* Títulos dentro de la tarjeta */
+.pagina-login .card-title,
+.pagina-registro .card-title {
+    color: var(--color-accent-green) !important; /* Título en verde brillante */
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* Estilo de las etiquetas (labels) */
+.form-label {
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Estilo de los campos de entrada (inputs) de Bootstrap */
+.form-control {
+    background-color: #2a2a2a; /* Fondo del input un poco más claro que el fondo principal */
+    color: var(--color-text-primary);
+    border: 1px solid #444; /* Borde oscuro y sutil */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    background-color: #2a2a2a;
+    color: var(--color-text-primary);
+    border-color: var(--color-accent-green); /* Borde verde al enfocar */
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 127, 0.25); /* Sombra de enfoque verde (clase Bootstrap modificada) */
+}
+
+/* Estilo del botón principal de acción (Ingresar / Registrarme) */
+.btn-success {
+    /* Sobrescribe el color verde por defecto de Bootstrap con el verde de acento */
+    background-color: var(--color-accent-green) !important;
+    border-color: var(--color-accent-green) !important;
+    color: var(--color-background-primary) !important; /* Texto oscuro en botón brillante */
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #00e676 !important; /* Verde más claro al hacer hover */
+    border-color: #00e676 !important;
+    transform: translateY(-2px);
+}
+
+/* Estilo de enlaces secundarios (¿Ya tienes cuenta? / Regístrate aquí) */
+.text-info {
+    color: var(--color-accent-blue) !important; /* Usamos el azul/verde de acento para el enlace */
+    font-weight: 500;
+}
+
+.text-info:hover {
+    text-decoration: underline !important;
+}
+
+/* Estilo para mensajes de alerta de error */
+.alert-danger {
+    background-color: #58151c; /* Fondo rojo oscuro */
+    color: #ffb3b3; /* Texto rojo claro */
+    border-color: #8c1c24;
+}
