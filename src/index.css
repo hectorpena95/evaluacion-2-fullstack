@@ -706,3 +706,21 @@ footer {
     justify-content: space-between;
     align-items: center;
 }
+
+.usuario-nav {
+    color: var(--color-accent-green);
+    font-weight: bold;
+}
+
+.btn-logout {
+    background: transparent;
+    border: none;
+    color: #ff4d4d;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-logout:hover {
+    color: #ff8080;
+}
