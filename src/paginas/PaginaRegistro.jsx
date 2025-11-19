@@ -31,7 +31,7 @@ const PaginaRegistro = () => {
         setError(null);
 
         // URL del Backend de Spring Boot (Puerto 8080)
-        const API_URL = 'http://localhost:8080/api/auth/register'; 
+        const API_URL = 'http://localhost:8080/api/v1/auth/registrar'; 
 
         try {
             // 2. Petición POST con Axios

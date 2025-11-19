@@ -1,103 +1,99 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-// Puedes necesitar una librería para decodificar el token JWT si quieres leer los roles o la expiración:
-// npm install jwt-decode
-import { jwtDecode } from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
 
 export const AuthContext = createContext();
 
-// URL para verificar la validez del token o obtener el perfil (si fuera necesario)
-const API_PERFIL_URL = 'http://localhost:8080/api/users/profile'; 
-
 const obtenerEstadoInicial = () => {
     const token = localStorage.getItem('userToken');
+    const userData = JSON.parse(localStorage.getItem('userData'));
+
     if (!token) {
         return { isAuthenticated: false, user: null, token: null, roles: [] };
     }
-    
+
     try {
         const decoded = jwtDecode(token);
-        // Verificar si el token no ha expirado
+
+        // Si expiró, lo limpiamos
         if (decoded.exp * 1000 < Date.now()) {
             localStorage.removeItem('userToken');
+            localStorage.removeItem('userData');
             return { isAuthenticated: false, user: null, token: null, roles: [] };
         }
-        
-        // Asumimos que el payload del JWT tiene 'sub' (username/email) y 'roles'
+
         return {
             isAuthenticated: true,
-            user: decoded.sub, // Generalmente el email o username
-            token: token,
-            roles: decoded.roles || [], // El backend debe incluir un array de roles aquí
+            user: userData?.username || decoded.sub,   // <--- Nombre de usuario REAL
+            token,
+            roles: decoded.roles || []
         };
 
     } catch (error) {
-        console.error("Error al decodificar el token:", error);
+        console.error("Error al decodificar token:", error);
         localStorage.removeItem('userToken');
+        localStorage.removeItem('userData');
         return { isAuthenticated: false, user: null, token: null, roles: [] };
     }
 };
 
 export const AuthProvider = ({ children }) => {
     const [authState, setAuthState] = useState(obtenerEstadoInicial);
-    
-    // Función centralizada para manejar el login
-    const login = (token) => {
+
+    // =============================
+    // 🔥 LOGIN CORREGIDO
+    // =============================
+    const login = (token, userData) => {
+        // Guardar token y datos del usuario
         localStorage.setItem('userToken', token);
-        
+        localStorage.setItem('userData', JSON.stringify(userData));
+
         try {
             const decoded = jwtDecode(token);
+
             setAuthState({
                 isAuthenticated: true,
-                user: decoded.sub, 
-                token: token,
-                roles: decoded.roles || [],
+                user: userData.username,   // <--- AQUÍ SE GUARDA EL NOMBRE REAL
+                token,
+                roles: decoded.roles || []
             });
-            // Opcional: Redirigir o recargar si es necesario
+
         } catch (error) {
             console.error("Login fallido al decodificar token:", error);
             logout();
         }
     };
-    
-    // Función centralizada para manejar el logout
+
+    // =============================
+    // LOGOUT
+    // =============================
     const logout = () => {
         localStorage.removeItem('userToken');
+        localStorage.removeItem('userData');
+
         setAuthState({
             isAuthenticated: false,
             user: null,
             token: null,
-            roles: [],
+            roles: []
         });
     };
-    
-    // Función auxiliar para verificar roles (útil para el componente RutaProtegida)
+
     const hasRole = (role) => {
         return authState.roles.includes(role);
     };
 
-    // Opcional: Configurar la instancia base de Axios para incluir el token
+    // Configurar token global en Axios
     useEffect(() => {
         if (authState.token) {
-            // Configura Axios para que todas las peticiones futuras incluyan el token
             axios.defaults.headers.common['Authorization'] = `Bearer ${authState.token}`;
         } else {
-            // Si no hay token, elimina el header de autorización
             delete axios.defaults.headers.common['Authorization'];
         }
-        // Este efecto se ejecutará cada vez que el token cambie (login/logout)
     }, [authState.token]);
 
-
-    const value = {
-        ...authState, // Provee isAuthenticated, user, token, roles
-        login,
-        logout,
-        hasRole,
-    };
-
     return (
-        <AuthContext.Provider value={value}>
+        <AuthContext.Provider value={{ ...authState, login, logout, hasRole }}>
             {children}
         </AuthContext.Provider>
     );

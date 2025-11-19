@@ -660,3 +660,49 @@ footer {
     color: #ffb3b3; /* Texto rojo claro */
     border-color: #8c1c24;
 }
+
+/* ================================================= */
+/* NAVBAR HORIZONTAL (TEMA OSCURO/GAMER VERDE) */
+/* ================================================= */
+
+.menu-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    display: flex;          /* ← Pasa de vertical a horizontal */
+    flex-direction: row;
+    gap: 25px;              /* Espacio entre los items */
+    align-items: center;
+}
+
+.menu-nav li {
+    display: flex;
+    align-items: center;
+}
+
+.menu-nav a {
+    color: var(--color-text-primary);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.menu-nav a:hover {
+    color: var(--color-accent-green);
+}
+
+/* Logo */
+.logo a {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--color-accent-green);
+    text-decoration: none;
+}
+
+/* Asegurar que header esté alineado */
+#main-header .contenedor-interno {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
