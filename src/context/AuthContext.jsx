@@ -1,7 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-// Puedes necesitar una librería para decodificar el token JWT si quieres leer los roles o la expiración:
-// npm install jwt-decode
 import { jwtDecode } from 'jwt-decode'; 
 
 export const AuthContext = createContext();
