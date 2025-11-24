@@ -3,28 +3,25 @@ import axios from 'axios';
 
 export const CarritoContext = createContext();
 
-// Función auxiliar para obtener el carrito inicial desde localStorage
+// Obtener carrito inicial desde localStorage
 const obtenerCarritoInicial = () => {
     const carritoGuardado = localStorage.getItem('carrito');
     return carritoGuardado ? JSON.parse(carritoGuardado) : [];
 };
 
-// URL para el endpoint de Pedidos/Checkout en el Backend
-const API_CHECKOUT_URL = 'http://localhost:8080/api/pedidos'; 
+const API_CHECKOUT_URL = 'http://localhost:8080/api/v1/pedidos';
 
 export const CarritoProvider = ({ children }) => {
     const [carrito, setCarrito] = useState(obtenerCarritoInicial);
     const [loadingCheckout, setLoadingCheckout] = useState(false);
     const [errorCheckout, setErrorCheckout] = useState(null);
 
-    // Persistencia: useEffect para guardar el carrito cada vez que cambie
+    // Guardar carrito en localStorage
     useEffect(() => {
         localStorage.setItem('carrito', JSON.stringify(carrito));
     }, [carrito]);
 
-
     const agregarItem = (producto, cantidad) => {
-        // ... (Lógica de agregarItem sin cambios)
         const existeItem = carrito.find(item => item.id === producto.id);
 
         if (existeItem) {
@@ -44,17 +41,13 @@ export const CarritoProvider = ({ children }) => {
         setCarrito(carrito.filter(item => item.id !== id));
     };
 
-    // ⬅️ Nuevo: Función para vaciar completamente el carrito
-    const vaciarCarrito = () => {
-        setCarrito([]);
-    };
+    const vaciarCarrito = () => setCarrito([]);
 
-    // ⬅️ Nuevo: Función para enviar el pedido final al Backend (Punto 5)
+    // ✔ FINALIZAR COMPRA CORREGIDO
     const finalizarCompra = async () => {
         setErrorCheckout(null);
         setLoadingCheckout(true);
 
-        // 1. Obtener el token del usuario (necesario para la autorización JWT - Punto 4)
         const token = localStorage.getItem('userToken');
 
         if (!token) {
@@ -64,42 +57,37 @@ export const CarritoProvider = ({ children }) => {
         }
 
         try {
-            // 2. Preparar los datos del pedido que el Backend esperaría:
+            // ✔ Lo que tu backend espera
             const pedidoData = {
-                items: carrito.map(item => ({
-                    productoId: item.id,
-                    cantidad: item.cantidad,
-                    precioUnitario: item.precio // Usar el precio para evitar fraudes
+                detalles: carrito.map(item => ({
+                    idProducto: item.id,
+                    cantidad: item.cantidad
                 })),
-                // Aquí podrías añadir el ID del usuario, dirección de envío, etc.
+                direccionEnvio: "No indicada",
+                ciudadEnvio: "No indicada"
             };
 
-            // 3. Petición POST con Axios a /api/pedidos
             const response = await axios.post(API_CHECKOUT_URL, pedidoData, {
                 headers: {
-                    // 4. Incluir el Token JWT para la autorización (Punto 4)
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
             });
 
-            // 5. Si es exitoso, vaciar el carrito local
-            vaciarCarrito(); 
+            vaciarCarrito();
 
-            // Devolver la respuesta del backend (ej: el ID del pedido)
-            return response.data; 
+            return response.data;
 
         } catch (err) {
             console.error('Error al finalizar la compra:', err);
+
             let message = "Fallo al procesar el pedido.";
-            
-            if (err.response && err.response.data && err.response.data.message) {
-                message = err.response.data.message;
-            } else if (err.response && err.response.status === 401) {
-                message = "Sesión expirada. Por favor, vuelva a iniciar sesión.";
-            }
-            
+
+            if (err.response?.data) message = err.response.data;
+            if (err.response?.status === 401) message = "Sesión expirada. Vuelva a iniciar sesión.";
+
             setErrorCheckout(message);
-            throw new Error(message); // Propagar el error al componente que llama
+            throw new Error(message);
         } finally {
             setLoadingCheckout(false);
         }
@@ -107,12 +95,12 @@ export const CarritoProvider = ({ children }) => {
 
     const value = {
         carrito,
-        loadingCheckout, // ⬅️ Nuevo: Estado de carga del checkout
-        errorCheckout,   // ⬅️ Nuevo: Estado de error del checkout
+        loadingCheckout,
+        errorCheckout,
         agregarItem,
         eliminarItem,
-        vaciarCarrito,   // ⬅️ Nuevo
-        finalizarCompra, // ⬅️ Nuevo
+        vaciarCarrito,
+        finalizarCompra,
     };
 
     return (
@@ -122,6 +110,4 @@ export const CarritoProvider = ({ children }) => {
     );
 };
 
-export const useCarrito = () => {
-    return useContext(CarritoContext);
-};
+export const useCarrito = () => useContext(CarritoContext);

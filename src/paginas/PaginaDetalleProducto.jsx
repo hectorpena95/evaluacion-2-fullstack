@@ -1,114 +1,127 @@
-import React, { useMemo, useState, useEffect } from 'react'; // ⬅️ Agregar useEffect
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios'; // ⬅️ Nuevo: Importar Axios
-import { formatearPrecio } from '../datos/datosProductos'; // Mantener utilidades
-import { useCarrito } from '../context/CarritoContext.jsx'; 
+import axios from 'axios';
+import { formatearPrecio } from '../datos/datosProductos';
+import { useCarrito } from '../context/CarritoContext.jsx';
 
-const API_BASE_URL = 'http://localhost:8080/api/productos'; // URL base del CRUD
+const API_BASE_URL = 'http://localhost:8080/api/v1/productos';
 
-const getImageUrl = (name) => {
-    // Esta función asume que el backend NO sirve la imagen, sino que el frontend la gestiona.
-    // Si el backend sirve la imagen, usarías: `${API_BASE_URL}/imagenes/${name}`
-    return new URL(`../assets/img/${name}`, import.meta.url).href;
-}
+// Función para resolver imagen local o URL externa
+const getImageUrl = (urlImagen) => {
+    if (!urlImagen) return "";
+    if (urlImagen.startsWith("http")) return urlImagen;
+
+    try {
+        return new URL(`../assets/img/${urlImagen}`, import.meta.url).href;
+    } catch (err) {
+        console.error("❌ Error cargando imagen:", urlImagen);
+        return "";
+    }
+};
 
 const PaginaDetalleProducto = () => {
-    const { agregarItem } = useCarrito(); 
-    
+    const { agregarItem } = useCarrito();
+    const { id } = useParams();
+
+    const [producto, setProducto] = useState(null);
     const [cantidad, setCantidad] = useState(1);
-    const [producto, setProducto] = useState(null); // ⬅️ Nuevo: Estado para el producto
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
-    const { id } = useParams(); // ID de la URL
 
-    // ⬅️ Nueva Lógica: useEffect para cargar el producto por ID
+    // 🔥 Cargar producto desde el backend
     useEffect(() => {
-        if (!id) return; // Si no hay ID, no hacer nada
-
         const fetchProducto = async () => {
             try {
-                // Endpoint para obtener un producto por ID (Ej: /api/productos/123)
                 const response = await axios.get(`${API_BASE_URL}/${id}`);
                 setProducto(response.data);
-                setLoading(false);
             } catch (err) {
-                console.error(`Error al cargar producto ${id}:`, err);
-                // Si el error es un 404, indicamos que no se encontró
-                if (err.response && err.response.status === 404) {
+                console.error("Error al cargar producto:", err);
+                if (err.response?.status === 404) {
                     setError("Producto no encontrado.");
                 } else {
                     setError("Error al conectar con el servidor.");
                 }
+            } finally {
                 setLoading(false);
             }
         };
 
-        setLoading(true);
         fetchProducto();
-    }, [id]); // Dependencia: Se recarga si cambia el ID en la URL
+    }, [id]);
 
-
-    const handleAgregarCarrito = () => {
-        // ... (La lógica de agregar al carrito permanece igual)
-        if (producto && cantidad > 0) {
-            agregarItem(producto, cantidad); 
-            alert(`¡${cantidad} x ${producto.nombre} agregado al carrito!`);
-            setCantidad(1); 
-        } else {
-            console.warn("No se puede agregar al carrito: producto nulo o cantidad inválida.");
-        }
-    };
-
-    // ⬅️ Nuevo: Manejo de estados de carga y error en el JSX
+    // ⏳ Cargando
     if (loading) {
-        return <main className="pagina-detalle-producto"><p>Cargando detalles del producto...</p></main>;
-    }
-    
-    // Si error es "Producto no encontrado" (404), mostramos la vista de error
-    if (error === "Producto no encontrado." || !producto) {
         return (
             <main className="pagina-detalle-producto">
-                <section className="detalles-producto">
-                    <h1>Producto no encontrado</h1>
-                    <p>Lo sentimos, el producto con ID "{id}" no existe en nuestro catálogo.</p>
-                    <Link to="/catalogo" className="boton-cta" style={{ marginTop: '20px', display: 'inline-block' }}>
-                        Volver al Catálogo
-                    </Link>
-                </section>
+                <p>Cargando detalles del producto...</p>
             </main>
         );
     }
-    
-    // Si hay otro tipo de error de servidor
-    if (error) {
-        return <main className="pagina-detalle-producto"><p className="text-danger">{error}</p></main>;
+
+    // ❌ Error 404
+    if (error === "Producto no encontrado" || !producto) {
+        return (
+            <main className="pagina-detalle-producto">
+                <h1>Producto no encontrado</h1>
+                <Link to="/catalogo" className="boton-cta">Volver al catálogo</Link>
+            </main>
+        );
     }
 
-    // Desestructuración, ahora después de las comprobaciones de estado
-    const { nombre, categoria, precio, imagen, descripcion } = producto;
+    // ❌ Error servidor
+    if (error) {
+        return (
+            <main className="pagina-detalle-producto">
+                <p className="text-danger">{error}</p>
+            </main>
+        );
+    }
+
+    // 🔥 Datos del producto
+    const { nombre, categoria, precio, descripcion, urlImagen } = producto;
+
+    const handleAgregarCarrito = () => {
+        agregarItem(producto, cantidad);
+        alert(`${cantidad} x ${nombre} agregado al carrito`);
+        setCantidad(1);
+    };
 
     return (
-        // ... (El resto del JSX permanece igual, utilizando la variable 'producto')
         <main className="pagina-detalle-producto">
-            {/* ... JSX sigue aquí ... */}
             <section className="detalles-producto">
-                {/* Imagen del Producto */}
-                <div className="imagen-producto">
-                    <img 
-                        src={getImageUrl(imagen)} 
-                        alt={nombre} 
-                    />
-                </div>
                 
-                {/* Información del Producto */}
-                <div className="info-producto">
-                    <h1 id="nombre-producto">{nombre}</h1>
-                    <p className="precio-producto" id="precio-producto">
-                        {formatearPrecio(precio)}
-                    </p>
-                    {/* ... (El resto del contenido JSX) ... */}
+                {/* Imagen */}
+                <div className="imagen-producto">
+                    <img src={getImageUrl(urlImagen)} alt={nombre} />
                 </div>
+
+                {/* Información */}
+                <div className="info-producto">
+                    <h1>{nombre}</h1>
+
+                    <p className="precio">{formatearPrecio(precio)}</p>
+
+                    <p><strong>Categoría:</strong> {categoria}</p>
+
+                    <p className="descripcion-producto">{descripcion}</p>
+
+                    <div className="acciones-producto">
+                        <label>Cantidad:</label>
+                        <input
+                            type="number"
+                            min="1"
+                            value={cantidad}
+                            onChange={(e) => setCantidad(Number(e.target.value))}
+                        />
+
+                        <button className="boton-cta" onClick={handleAgregarCarrito}>
+                            Agregar al carrito
+                        </button>
+                    </div>
+
+                    <Link to="/catalogo" className="boton-volver">← Volver al Catálogo</Link>
+                </div>
+
             </section>
         </main>
     );

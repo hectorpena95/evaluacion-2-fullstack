@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useCarrito } from '../context/CarritoContext.jsx'; 
 import { Link } from 'react-router-dom'; 
@@ -7,16 +6,15 @@ const getAssetUrl = (fileName) => {
     return new URL(`../assets/img/${fileName}`, import.meta.url).href;
 }
 
-
 const ItemCarrito = ({ item, eliminarItem }) => { 
     const formatPrice = (price) => `$${price.toFixed(2)} CLP`;
 
     return (
         <div className="item-carrito">
             <div className="detalle-producto">
-                {/* 2. USO DE LA FUNCIÓN PARA RESOLVER LA RUTA DE LA IMAGEN */}
+
                 <img 
-                    src={getAssetUrl(item.imagen)} 
+                    src={getAssetUrl(item.urlImagen)}
                     alt={item.nombre} 
                     className="imagen-carrito" 
                 />
@@ -47,9 +45,8 @@ const ItemCarrito = ({ item, eliminarItem }) => {
     );
 };
 
-
 const PaginaCarrito = () => {
-    const { carrito, eliminarItem } = useCarrito(); 
+    const { carrito, eliminarItem, finalizarCompra } = useCarrito();
 
     const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
     const totalFormateado = `$${total.toFixed(2)} CLP`;
@@ -60,7 +57,6 @@ const PaginaCarrito = () => {
                 <h1>Tu Carrito de Compras</h1>
                 
                 <div id="items-carrito" className="contenedor-items">
-                    {/* Renderiza los items usando el estado REAL del contexto */}
                     {carrito.length > 0 ? (
                         carrito.map(item => (
                             <ItemCarrito 
@@ -78,11 +74,25 @@ const PaginaCarrito = () => {
                     )}
                 </div>
 
-                {/* Resumen solo se muestra si hay items */}
                 {carrito.length > 0 && (
                     <div className="resumen-carrito">
                         <p>Total: <span id="total-carrito">{totalFormateado}</span></p>
-                        <button className="boton-cta boton-pagar">Proceder al Pago</button>
+
+                        {/* ✔ Botón funcional */}
+                        <button
+                            className="boton-cta boton-pagar"
+                            onClick={async () => {
+                                try {
+                                    const r = await finalizarCompra();
+                                    alert("✔ Compra realizada con éxito");
+                                } catch (e) {
+                                    console.error(e);
+                                    alert("❌ Error al procesar la compra: " + e.message);
+                                }
+                            }}
+                        >
+                            Procesar Pago
+                        </button>
                     </div>
                 )}
             </section>

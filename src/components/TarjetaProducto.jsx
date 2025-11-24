@@ -1,31 +1,52 @@
 import React from 'react';
-import { formatearPrecio } from '../datos/datosProductos';
+import { Link } from 'react-router-dom';
 
-const TarjetaProducto = ({ producto }) => {
-    const { id, nombre, categoria, precio, imagen } = producto;
+// Detecta si la imagen viene como URL externa o archivo local
+const getImageUrl = (urlImagen) => {
+    if (!urlImagen) return "";
 
-    const getImageUrl = (name) => {
-        return new URL(`../assets/img/${name}`, import.meta.url).href;
+    if (urlImagen.startsWith("http")) {
+        return urlImagen;
     }
 
-    const urlDetalle = `/detalle-producto/${id}`; 
+    try {
+        return new URL(`../assets/img/${urlImagen}`, import.meta.url).href;
+    } catch (err) {
+        console.error("❌ Error cargando imagen:", urlImagen);
+        return "";
+    }
+};
+
+const TarjetaProducto = ({ producto }) => {
+
+    // 🛑 FIX DEFINITIVO
+    if (!producto) {
+        console.warn("TarjetaProducto recibió producto = null/undefined");
+        return null;
+    }
+
+    const { id, nombre, categoria, precio, urlImagen } = producto;
 
     return (
         <div className="tarjeta-producto">
-            {/* Llamamos a la función getImageUrl con el nombre de archivo del producto */}
-            <img 
-                src={getImageUrl(imagen)} 
-                alt={nombre} 
-            /> 
-            
+            <div className="imagen-container">
+                <img
+                    src={getImageUrl(urlImagen)}
+                    alt={nombre}
+                    className="imagen-producto"
+                />
+            </div>
+
             <h3>{nombre}</h3>
-            <p className="categoria-producto">{categoria}</p> 
-            
-            {/* Formateamos el precio antes de mostrarlo */}
-            <p className="precio-producto">{formatearPrecio(precio)}</p>
-            
-            {/* El evento de clic de tu botón 'Ver Detalle' ahora usa la ruta de React Router */}
-            <a href={urlDetalle} className="boton-cta">Ver Detalle</a>
+            <p className="categoria">{categoria}</p>
+
+            <p className="precio">
+                ${precio.toLocaleString("es-CL")}
+            </p>
+
+            <Link to={`/detalle-producto/${id}`} className="boton-detalle">
+                Ver Detalle
+            </Link>
         </div>
     );
 };

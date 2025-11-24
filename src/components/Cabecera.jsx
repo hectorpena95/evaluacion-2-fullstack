@@ -4,7 +4,8 @@ import { useAuth } from "../context/AuthContext";
 const Cabecera = () => {
     const { isAuthenticated, user, roles, logout } = useAuth();
 
-    console.log("ROLES EN EL HEADER:", roles); // 🔍 Para verificar
+    const esCliente = roles?.some(r => r === "CLIENT" || r === "ROLE_CLIENT");
+    const esAdmin = roles?.some(r => r === "ADMIN" || r === "ROLE_ADMIN");
 
     return (
         <header id="main-header">
@@ -16,16 +17,17 @@ const Cabecera = () => {
 
                 <nav className="menu-nav">
                     <ul>
-                        {/* Siempre visible */}
                         <li><Link to="/catalogo">Catálogo</Link></li>
 
-                        {/* Cliente → mostrar carrito */}
-                        {roles?.includes("ROLE_CLIENT") && (
-                            <li><Link to="/carrito">Carrito</Link></li>
+                        {/* 🔥 Carrito SOLO para CLIENTE */}
+                        {esCliente && (
+                            <li>
+                                <Link to="/carrito">Carrito</Link>
+                            </li>
                         )}
 
-                        {/* Admin → mostrar menú admin */}
-                        {roles?.includes("ROLE_ADMIN") && (
+                        {/* 🔥 Admin → menú admin */}
+                        {esAdmin && (
                             <>
                                 <li><Link to="/admin">Panel Admin</Link></li>
                                 <li><Link to="/gestion-productos">Productos</Link></li>
@@ -33,7 +35,6 @@ const Cabecera = () => {
                             </>
                         )}
 
-                        {/* Login / Logout */}
                         {!isAuthenticated ? (
                             <li><Link to="/login">Iniciar Sesión</Link></li>
                         ) : (
