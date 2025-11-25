@@ -16,7 +16,7 @@ const PaginaGestionProductos = () => {
         urlImagen: ""
     });
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("userToken");
 
     // ================================
     // Cargar productos del backend
@@ -44,11 +44,12 @@ const PaginaGestionProductos = () => {
         e.preventDefault();
 
         try {
-            await axios.post("http://localhost:8080/api/v1/productos",
+            await axios.post(
+                "http://localhost:8080/api/v1/productos",
                 nuevoProducto,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${token}` // 🔥 CORRECTO
                     }
                 }
             );
@@ -81,7 +82,9 @@ const PaginaGestionProductos = () => {
             await axios.delete(
                 `http://localhost:8080/api/v1/productos/${id}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {
+                        Authorization: `Bearer ${token}` // 🔥 CORRECTO
+                    }
                 }
             );
 
@@ -187,7 +190,9 @@ const PaginaGestionProductos = () => {
                                 <td>${p.precio}</td>
                                 <td>{p.stock}</td>
                                 <td>{p.categoria}</td>
-                                <td><img src={p.urlImagen} width="50" /></td>
+                                <td>
+                                    <img src={p.urlImagen} width="50" alt={p.nombre} />
+                                </td>
 
                                 <td>
                                     <button

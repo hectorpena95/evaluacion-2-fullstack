@@ -24,9 +24,9 @@ const obtenerEstadoInicial = () => {
         // Asumimos que el payload del JWT tiene 'sub' (username/email) y 'roles'
         return {
             isAuthenticated: true,
-            user: decoded.sub, // Generalmente el email o username
+            user: decoded.sub, 
             token: token,
-            roles: decoded.roles || [], // El backend debe incluir un array de roles aquí
+            roles: decoded.roles || [], 
         };
 
     } catch (error) {
